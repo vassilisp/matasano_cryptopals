@@ -3,7 +3,7 @@ import c3
 import math
 import c5
 
-from utils import test
+from utils import *
 
 def transpose(byte_input, window):
 	full_len = len(byte_input)
@@ -42,8 +42,7 @@ def analyze(encrypted, keyLen):
 
 encrypted = c6.read_b64_file('6.txt')
 
-if __name__ == "__main__":
-
+def test_challenge_6b():
 	keyLen = c6.getKeyLength(encrypted)
 	print("key length is:", keyLen)
 	key = analyze(encrypted, keyLen)
@@ -53,7 +52,13 @@ if __name__ == "__main__":
 	print("===== DECRYPTED =====")
 	print(plain.decode())
 
-	test(key, b'Terminator X: Bring the noise', "challenge 6 key recovery")
+	assert_equals(key, b'Terminator X: Bring the noise', "challenge 6 key recovery")
+
+if __name__ == "__main__":
+
+	assert_equals = asq
+	test_challenge_6b()
+
 
 
 

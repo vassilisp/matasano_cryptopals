@@ -2,7 +2,8 @@ import binascii
 import base64
 import itertools
 
-from utils import test
+from utils import asq
+from nose.tools import assert_equals
 
 def hamming(byte_input1, byte_input2):
 	"""Calculate the Hamming distance between two bytearrays/strings"""
@@ -69,28 +70,34 @@ def getKeyLength(bin_input, max_key_length=40):
 	return getKeyLengthN(bin_input, max_key_length, N=1)[0][1]
 
 #========================================
-def test1():
+def test_hamming():
 	in1 = "this is a test"	
 	in2 = "wokka wokka!!!"
 
 	res = hamming(in1, in2)
-	assert res == 37
+	assert_equals(res, 37)
 	print("hamming function test - OK")
 
-#========================================
-encrypted = read_b64_file('6.txt')
-
-if __name__ == "__main__":
-
-	test1()
-
+def test_challenge6():
 	#print(encrypted)
 
 	topKeyLen = getKeyLengthN(encrypted)
 	print(topKeyLen)
 	keyLen = getKeyLength(encrypted)
 	print(keyLen)
-	test(keyLen, 29, "challenge 6 key size")
+	#test(keyLen, 29, "challenge 6 key size")
+	assert_equals(keyLen, 29, "challenge 6 key size")
+#========================================
+
+encrypted = read_b64_file('6.txt')
+
+if __name__ == "__main__":
+
+	assert_equals = asq
+
+	test_hamming()
+	test_challenge6()
+
 
 
 

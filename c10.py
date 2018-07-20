@@ -1,4 +1,4 @@
-from utils import test
+from utils import *
 from c9 import pad, unpad
 from c2 import fixed_xor3 as fixed_xor
 from c7 import encrypt, decrypt
@@ -42,8 +42,7 @@ def cbc_decrypt(iv, key, enc_input):
 iv = bytes(block_size)
 key = "YELLOW SUBMARINE"
 
-def test1():
-	text = b"YELLOW submarineYELLOW submarineYELLOW sub"
+def test_encr_decr_round():
 
 	ciphert = cbc_encrypt(iv, key, text)
 	#print("ciphertext:", ciphert)
@@ -51,6 +50,7 @@ def test1():
 	#print("plaintext:", plaint)
 	test(plaint, text, "encrypt/decrypt round test")
 
+def test_encr_decr_round_rnd_iv():
 	iv2 = bytearray(block_size)
 	iv2[0] = 1
 	ciphert = cbc_encrypt(iv2, key, text)
@@ -59,14 +59,20 @@ def test1():
 	#print("plaintext:", plaint)
 	test(plaint, text, "encrypt/decrypt round test - second IV")
 
-
-if __name__ == "__main__":
-	test1()
-
-	bin_input = read_b64_file('10.txt')
-
+def test_challenge10():
 	res = cbc_decrypt(iv, key, bin_input)
 	print(res.decode())
+	print("challenge 10 passed")
+
+bin_input = read_b64_file('10.txt')
+text = b"YELLOW submarineYELLOW submarineYELLOW sub"
+
+if __name__ == "__main__":
+	assert_equals = asq
+	test_encr_decr_round()
+	test_encr_decr_round_rnd_iv()
+	test_challenge10()
+
 
 
 

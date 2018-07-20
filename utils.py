@@ -1,10 +1,19 @@
+from nose.tools import assert_equals
 
-def test(org, expected, name=""):
+def ass(expression, name=""):
+	if expression:
+		print("PASSED -", name)
+	else:
+		print("FAILED -", name, " - input:", expression)
+		raise Exception
+
+def asq(org, expected, name=""):
 	try:
 		assert org == expected
 		print("PASSED -", name)
 	except AssertionError as ex:
 		print("FAILED -", name, " - input:", org, " - expecte:", expected)
+		raise Exception
 
 def ntest(org, expected, name=""):
 	try:
@@ -12,3 +21,6 @@ def ntest(org, expected, name=""):
 		print("PASSED -", name)
 	except AssertionError as ex:
 		print("FAILED -", name, " - input:", org, " - expecte:", expected)
+		raise Exception
+
+test = asq

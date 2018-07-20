@@ -1,10 +1,9 @@
 import binascii
 import c6
 
-from utils import test
+from utils import *
 
-
-if __name__ == "__main__":
+def test_challenge8():
 	filename = '8.txt'
 	with open(filename) as f:
 		res = []
@@ -20,4 +19,8 @@ if __name__ == "__main__":
 	print(res[:3])
 	out = res[0][0]
 	print("result:", out )
-	test(out, 132, "challenge 8 guess")
+	assert_equals(out, 132, "challenge 8 guess")
+
+if __name__ == "__main__":
+	assert_equals = asq
+	test_challenge8()

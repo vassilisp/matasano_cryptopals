@@ -1,4 +1,5 @@
 import binascii
+from utils import asq, assert_equals
 
 def single_byte_xor(bin_input, xor_byte):
 	""" input in bytes, xor_byte in int (0-127) """
@@ -68,13 +69,16 @@ def find_top(bin_input):
 	res = find_topN(bin_input)
 	return res[0][1:]
 
+def test_challenge3():
+	possible = find_top(bin_input)
+	print(possible)
+	assert_equals(possible[1], 88, "challenge 3")
+
 hex_input = '1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736'
 bin_input = binascii.unhexlify(hex_input)
 
 if __name__ == "__main__":
-
-	#possible = find_topN(bin_input, N=3)
-	possible = find_top(bin_input)
-	print(possible)
+	assert_equals = asq
+	test_challenge3()
 
 	

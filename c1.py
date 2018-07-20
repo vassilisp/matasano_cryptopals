@@ -1,7 +1,8 @@
 import binascii
 import codecs
 import base64
-from nose.tools import assert_equals
+
+from utils import *
 
 """
 note: all results are byte-representation - use .decode('utf-8') to turn them into strings
@@ -16,10 +17,10 @@ expected = 'SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t'
 
 def test_challenge1():
 	res1 = hex_to_base64(hex_input)
-	assert_equals(res1.decode(), expected)
+	assert_equals(res1.decode(), expected, "Challenge 1")
 
 if __name__ == "__main__":
+	assert_equals = asq
 	test_challenge1()
-	print("challenge 1 passed")
 
 
