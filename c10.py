@@ -39,6 +39,7 @@ def cbc_decrypt(iv, key, enc_input):
 	res = unpad(res)
 	return res
 
+#----------------------------------------
 iv = bytes(block_size)
 key = "YELLOW SUBMARINE"
 
@@ -63,6 +64,7 @@ def test_challenge10():
 	res = cbc_decrypt(iv, key, bin_input)
 	print(res.decode())
 	print("challenge 10 passed")
+#----------------------------------------
 
 bin_input = read_b64_file('10.txt')
 text = b"YELLOW submarineYELLOW submarineYELLOW sub"

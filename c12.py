@@ -1,5 +1,5 @@
 from c11 import randomPad, getRandom, repetitions
-from c9 import pad
+from c9 import pad, unpad
 from c7 import encrypt as ecb_encrypt
 
 from base64 import b64decode
@@ -14,7 +14,7 @@ def encryption_oracle(bin_input):
 	return ecb_encrypt(key, padded)
 
 
-def findBlockSize(oracle):
+def findBlockSize_old(oracle):
 	res = 0
 	for i in range(1,128):
 		inp = i*b"A"
@@ -26,6 +26,16 @@ def findBlockSize(oracle):
 			break
 	return res
 
+def findBlockSize(oracle):
+	t1 = len(oracle(b''))
+	t2 = t1
+	i = 0
+	while t2 == t1:
+		t2 = len(oracle(b'A'*i))
+		i += 1
+	return abs(t2 - t1)
+
+
 def detectECB(oracle):
 	enc = oracle(64*b"A")
 	res = False
@@ -34,39 +44,44 @@ def detectECB(oracle):
 	return res
 
 
-def find_next_char(block_size, known=b''):
+def find_next_char(oracle, block_size, known=b''):
 	dic = {}
 	tlen = block_size - (len(known)%block_size) - 1
 	inp = bytes(tlen*b'A') 
 	for i in range(256):
 		t = inp + known + bytes([i])
-		enc = encryption_oracle(t)
+		enc = oracle(t)
 		dic[enc[:len(t)]] = i
 
-	enc2 = encryption_oracle(bytes(inp))
+	enc2 = oracle(bytes(inp))
 	try:
 		res = dic[enc2[:len(t)]]
 	except:
 		res = None
 	return res
 
+def findAll(oracle):
+	res = b''
+	while True:
+		char = find_next_char(oracle, 16, res)
+		if char == None:
+			break
+		print(char)
+		res += bytes([char])
+
+
+	res = unpad(res)
+	return res
 
 def test_challenge12():
 
 	if not detectECB(encryption_oracle):
 		return False
 	block_size = findBlockSize(encryption_oracle)
-	res = b''
-	while True:
-		char = find_next_char(16, res)
-		if char == None:
-			break
-		#print(char)
-		res += bytes([char])
-
-
-	#print("RESULT", res)
-	assert_equals(res[:64], appText[:64], 'Challenge 12 decryption')
+	print("Block size:", block_size)
+	res = findAll(encryption_oracle)
+	print("RESULT", res)
+	assert_equals(res, appText, 'Challenge 12 decryption')
 	
 	
 key = getRandom(16)
