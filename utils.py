@@ -7,6 +7,9 @@ def ass(expression, name=""):
 		print("FAILED -", name, " - input:", expression)
 		raise Exception
 
+def asn(expression, name=""):
+	ass(not expression, name)
+
 def asq(org, expected, name=""):
 	try:
 		assert org == expected
