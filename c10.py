@@ -27,14 +27,13 @@ def cbc_decrypt(iv, key, enc_input, blockSize=16):
 #decrypt and xor with iv
 #decrypt and xor with previous cipher
 	res = bytearray()
-	pc_block = iv
-	for i in range(0, len(enc_input), blockSize):
-		#print(i)
+	enc_input = bytes(iv + enc_input)
+	for i in range(len(iv), len(enc_input), blockSize):
 		c_block = enc_input[i : (i+blockSize)]
 		i_block = decrypt(key, c_block)
 
+		pc_block = enc_input[(i-blockSize):i]
 		p_block = fixed_xor(pc_block, i_block)
-		pc_block = c_block
 
 		res.extend(p_block)
 	res = unpad(res)
