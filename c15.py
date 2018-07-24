@@ -11,6 +11,7 @@ def checkPadding(binInput):
 			raise PaddingException
 
 
+#========================================
 def test_correct_pad():
 	checkPadding(validPad)
 	ass(True, 'correct pad')
@@ -37,6 +38,7 @@ def test_challenge15():
 validPad = b"ICE ICE BABY\x04\x04\x04\x04"
 wrongPad1 = b"ICE ICE BABY\x05\x05\x05\x05"
 wrongPad2 = b"ICE ICE BABY\x01\x02\x03\x04" 
+#========================================
 
 if __name__ == "__main__":
 	test_challenge15()

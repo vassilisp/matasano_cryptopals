@@ -31,13 +31,15 @@ def decrypt(binInput):
 	iv = binInput[:16]
 	padded = cbc_decrypt(iv, key, enc)
 	plain = unpad(padded)
-	print(plain)
+	#print(plain)
 	return plain
 
 def check(binInput):
 	out = decrypt(binInput)
 	res = False
 	if b';admin=true;' in out:
+		print("CIPHER --  ", binInput)
+		print("PLAIN  --  ", out)
 		res = True
 	return res
 
@@ -61,43 +63,68 @@ def test_not_allowed_signs_period():
 	asn(b'true;true' in out, 'not allowed sign check - ;')
 
 #----------------------------------------
-
-def inputForNewBlock(blockSize):
-	inLen = blockSize - (lprep % blockSize)
+def inputForNewBlock(blockSize, prepSize):
+	inLen = blockSize - (prepSize % blockSize)
 	return inLen*b'A'
 	
+def injectCipherText(oracle, binInput, prepSize=None):
+	if prepSize == None:
+		prepSize = randint(0,len(oracle(b'')))
+
+	bS = findBlockSize(oracle)
+
+	in1 = inputForNewBlock(bS, prepSize)
+	#print('block size:', bS)
+
+	fillerBlock = bytes(bS)
+	endBlock = binInput
+	orgBlock = bytes(len(endBlock))
+	if len(endBlock) > bS:
+		raise Exception
+
+	inp = in1 + fillerBlock + orgBlock
+	enc = oracle(inp)
+
+	start = prepSize + len(in1) + bS
+	controlBlock = bytearray(enc)
+	for i, char in enumerate(endBlock):
+		loc = start + i 
+
+		controlBlock[loc] ^= char
+
+	return bytes(controlBlock)
 
 def test_challenge16():
-	bS = findBlockSize(encrypt)
-
-	in1 = inputForNewBlock(bS)
-	in1 = b''
-	print(bS)
-	print(lprep)
-
-	controlBlock = bytearray(16)
-	modBlock = b'XadminXtrue'
-	loc1 = 0
-	loc2 = 6
-
-	inp = in1 + bytes(controlBlock) + modBlock
-	enc = encrypt(inp)
-
-	start = lprep + len(in1) + bS
-
-	loc1 = loc1 + start 
-	loc2 = loc2 + start
-
-	modBlock = bytearray(enc)
-	modBlock[loc1] = ord('X') ^ ord(';') ^ enc[loc1]
-	modBlock[loc2] = ord('X') ^ ord('=') ^ enc[loc2]
-	mod_enc = bytes(modBlock)
-	res = check(mod_enc)
+	print("CHALLENGE 16")
+	modded = injectCipherText(encrypt, b';admin=true', lprep)
+	res = check(modded)
 	
 	ass(res, 'challenge 16 test')
+
+def test_challenge16_unknown_prep():
+	print("CHALLENGE 16 === HARD")
+	maxTries = 1000000
+	res = False
+	for i in range(maxTries):
+		try:
+#			modded = injectCipherTextUnknownPrep(encrypt, b';admin=true')
+			modded = injectCipherText(encrypt, b';admin=true')
+			res = check(modded)
+		except:
+			continue
+
+		if i%100 == 0:
+			print("TRY:", i)
+		if res:
+			print("FOUND IT IN TRY:", i)
+			break
+
+	
+	ass(res, 'challenge 16 test - HARD')
 
 if __name__ == "__main__":
 	test_enc_dec_round()
 	test_not_allowed_signs()
 	test_not_allowed_signs_period()
 	test_challenge16()
+	test_challenge16_unknown_prep()
