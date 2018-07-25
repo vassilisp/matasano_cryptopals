@@ -6,6 +6,7 @@ from random import randint
 from math import ceil
 import string
 
+from utils import *
 
 def randomOracleModification(prev, current):
 	rnd = getRandom(i)
@@ -28,7 +29,7 @@ def oracleAttack():
 			break
 		res = decryptLastBlock(cipher) + res
 		cipher = cipher[:-bS]
-	print(res)
+	return res
 
 
 
@@ -74,26 +75,38 @@ def findIBlock(cipher, iknown = ''):
 
 			mp = bytes([rI]) * rI
 			inter = fixed_xor(mp, mm[-rI:])
+			inter2 = rI ^ mm[-rI]
 
-			pp = inter[0] ^ cn1[-rI:][0]
+			pp = inter[0] ^ cn1[-rI]
 			pp = bytes([pp])
 			results.append([pp, inter])
 
 	if len(results) == 1:
+		#print("Only one result")
 		return results[0][0], results[0][1]
 
 	if len(results) > 1:
 		for res in results:
-			if (res[0].decode() in string.printable) or (res[0] != bytes([rI])):
+			if (res[0] != bytes([rI])):
+				#print("Found by comparing to rI")
+				return res[0], res[1]
+			if (res[0].decode() in string.printable):
+				#print("Found printable")
 				return res[0], res[1]
 
-	return results[0][0], results[0][1]
-	print("padding oracle did not work-adding dummy")
+	raise Exception("padding oracle did not work-adding dummy")
 
+
+def test_challenge_17():
+	for i in range(20):
+		res = oracleAttack()
+		print(res)
+		if int(res[:6]) < 20:
+			ass(True, "challenge 16 oracle")
 
 
 if __name__ == "__main__":
-	oracleAttack()
+	test_challenge_17()
 
 
 				
