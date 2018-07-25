@@ -5,6 +5,7 @@ def ass(expression, name=""):
 		print("PASSED -", name)
 	else:
 		print("FAILED -", name, " - input:", expression)
+		raise Exception("expression match failed")
 
 def asn(expression, name=""):
 	ass(not expression, name)

@@ -12,6 +12,7 @@ key = getRandom(16)
 def encrypt():
 	global key
 	i = randint(0,9)
+	i = 1
 	item = inputList[i]
 	item = b64decode(item)
 	return cbcEncryptIv(key, item )
@@ -24,7 +25,7 @@ def decrypt(cipher):
 		cbcDecryptIv(key, cipher)
 		res = True
 	except PaddingException:
-		print("XX - Padding Exception Caught")
+		#print("XX - Padding Exception Caught")
 		pass
 	return res
 
@@ -44,6 +45,8 @@ def cbcDecryptIv(key, cipherInput):
 	plain = cbc_decrypt(iv, key ,cipher)
 
 	checkPadding(plain)
+	print("DDD", plain)
+	print("DDD length", len(plain))
 	return unpad(plain)
 
 #----------------------------------------

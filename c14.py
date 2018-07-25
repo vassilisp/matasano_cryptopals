@@ -2,12 +2,13 @@
 from c7 import encrypt as ecb_encrypt
 from c9 import pad, unpad
 from c11 import randomPad, getRandom, repetitions
-from c12 import findBlockSize, detectECB, findAll
+from c12 import detectECB, findAll
 
 from random import randint
 from base64 import b64decode
 
 from utils import assert_equals, asq
+from tools import findBlockSize, getBlocks
 
 key = None
 randomPad = None
@@ -25,9 +26,6 @@ def encryption_oracle(bin_input):
 	padded = pad(randomPad + bin_input, 16)
 	return ecb_encrypt(key, padded)
 
-
-def getBlocks(binInput, blockSize):
-	return [binInput[i: i + blockSize] for i in range(0, len(binInput), blockSize)]
 
 def findRandomSize(oracle):
 	bS = findBlockSize(oracle)

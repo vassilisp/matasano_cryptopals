@@ -5,15 +5,9 @@ from c6 import hamming_keys
 
 from os import urandom
 from random import randint
-import itertools
 
 from utils import *
-
-def getRandomL(klen):
-	return urandom(klen)
-
-def getRandom(klen):
-	return urandom(klen)
+from tools import getRandom, repetitions
 
 def randomPad(bin_input):
 	return getRandom(randint(5, 10)) + bin_input + getRandom(randint(5,10))
@@ -40,14 +34,6 @@ def encryption_oracle(bin_input):
 		out = cbc_encrypt(iv, key, padded)
 	#print(algo, "encrypt")
 	return out, algo
-
-
-def repetitions(bin_input, size=8):
-	blocks = [bin_input[i: i+size] for i in range(0, len(bin_input), size)]
-	if len(blocks[-1]) < size: blocks = blocks[:-1]
-	scr = sum([1 if pair[0] == pair[1] else 0 for pair in itertools.combinations(blocks, 2)])
-	#print(scr)
-	return scr
 
 def guess(ciphert):
 	scr = hamming_keys(ciphert, 16, 0)/len(ciphert)

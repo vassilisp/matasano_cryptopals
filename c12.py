@@ -5,6 +5,7 @@ from c7 import encrypt as ecb_encrypt
 from base64 import b64decode
 
 from utils import assert_equals, asq
+from tools import findBlockSize
 
 def encryption_oracle(bin_input):
 	global key
@@ -14,7 +15,7 @@ def encryption_oracle(bin_input):
 	return ecb_encrypt(key, padded)
 
 
-def findBlockSize_old(oracle):
+def __findBlockSize_old(oracle):
 	res = 0
 	for i in range(1,128):
 		inp = i*b"A"
@@ -25,15 +26,6 @@ def findBlockSize_old(oracle):
 			res = i/2
 			break
 	return res
-
-def findBlockSize(oracle):
-	t1 = len(oracle(b''))
-	t2 = t1
-	i = 0
-	while t2 == t1:
-		t2 = len(oracle(b'A'*i))
-		i += 1
-	return abs(t2 - t1)
 
 
 def detectECB(oracle):
