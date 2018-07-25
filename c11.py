@@ -36,6 +36,7 @@ def encryption_oracle(bin_input):
 	else:
 		algo = "CBC"
 		iv = getRandom(16)
+		padded = pad(padded, 16)
 		out = cbc_encrypt(iv, key, padded)
 	#print(algo, "encrypt")
 	return out, algo
