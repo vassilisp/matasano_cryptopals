@@ -4,9 +4,9 @@ class PaddingException(Exception):
 	"""Wrong padding exception"""
 	pass
 
-def checkPadding(binInput):
+def checkPadding(binInput, blockSize=16):
 	paddingIndication = binInput[-1]
-	if paddingIndication == 0 or paddingIndication > 16:
+	if paddingIndication == 0 or paddingIndication > blockSize:
 			raise PaddingException
 
 	for i in range(1, paddingIndication + 1):

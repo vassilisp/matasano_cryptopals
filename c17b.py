@@ -1,6 +1,6 @@
 from c17 import encrypt, decrypt
 
-from tools import getBlocks, getRandom, fixed_xor
+from tools import getBlocks, getRandom, fixed_xor, findBlockSize
 
 from random import randint
 from math import ceil
@@ -17,48 +17,41 @@ def randomOracleModification(prev, current):
 def getConsecutivePrev(inList, index):
 	return inList[index - 1], inList[index]
 
-def oracleAttack():
+def oracleAttack(cipher, oracle, bS=16):
 	"""Decrypt all blocks"""
-	bS = 16
-	cipher = encrypt()
 
 	nBlocks = ceil(len(cipher) / bS)
 	res = b''
 	for i in range(nBlocks):
 		if len(cipher) < 2*bS:
 			break
-		res = decryptLastBlock(cipher) + res
+		res = decryptLastBlock(cipher, oracle, bS) + res
 		cipher = cipher[:-bS]
 	return res
 
 
-
-def decryptLastBlock(cipher):
+def decryptLastBlock(cipher, oracle, bS):
 	"""Decrypt full block"""
-
-	bS = 16
 
 	iknown = b''
 	result = b''
 	for i in range(bS):
-		res, iknown = findIBlock(cipher, iknown)
+		res, iknown = findIBlock(cipher, iknown, oracle, bS)
 		result = res + result
 
 	assert len(result) == bS
 	return result
 
 
-def findIBlock(cipher, iknown = ''):
+def findIBlock(cipher, iknown, oracle, bS):
 	"""Decrypt I byte in block
 	requires intermediate known state up to I byte"""
 
-	bS = 16
 	bS2 = 2 * bS
 	cn1 = cipher[-bS2:-bS]
 	cn = cipher[-bS:]
 
 	rI = len(iknown) + 1
-	I = bS - rI
 
 	mknown = fixed_xor(iknown, bytes([rI]) * (rI - 1))
 	results = []
@@ -71,15 +64,12 @@ def findIBlock(cipher, iknown = ''):
 		attempt += mm + cn
 
 		#print("ATTEMPT", i)
-		if decrypt(attempt):
+		if oracle(attempt):
 
-			mp = bytes([rI]) * rI
-			inter = fixed_xor(mp, mm[-rI:])
-			inter2 = rI ^ mm[-rI]
+			inter = rI ^ i
+			pp = inter ^ cn1[-rI]
+			results.append([bytes([pp]), bytes([inter]) + iknown, mm != cn1])
 
-			pp = inter[0] ^ cn1[-rI]
-			pp = bytes([pp])
-			results.append([pp, inter])
 
 	if len(results) == 1:
 		#print("Only one result")
@@ -87,19 +77,16 @@ def findIBlock(cipher, iknown = ''):
 
 	if len(results) > 1:
 		for res in results:
-			if (res[0] != bytes([rI])):
-				#print("Found by comparing to rI")
-				return res[0], res[1]
-			if (res[0].decode() in string.printable):
-				#print("Found printable")
+			if res[2]:
 				return res[0], res[1]
 
-	raise Exception("padding oracle did not work-adding dummy")
+	raise Exception("padding oracle did not work")
 
 
 def test_challenge_17():
 	for i in range(20):
-		res = oracleAttack()
+		cipher = encrypt()
+		res = oracleAttack(cipher, decrypt)
 		print(res)
 		if int(res[:6]) < 20:
 			ass(True, "challenge 16 oracle")
