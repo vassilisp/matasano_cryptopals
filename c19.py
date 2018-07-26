@@ -80,6 +80,8 @@ def analyze_item(trigram, c1, cipherList):
 
 			score += trigramScore(gp)
 			score += popularScore(gp)
+			score += letterScore(gp)
+			score += notPrintable(gp)
 
 		full_key.append([ii,ii+lt, score, gk])
 	return full_key
@@ -87,14 +89,17 @@ def analyze_item(trigram, c1, cipherList):
 def trigramScore(tr):
 	if tr in trigrams:
 		print('Found trigram')
-		return 50
+		return 60
 	return 0
+
 def letterScore(binInput):
 	score = 0
 	base = string.ascii_uppercase
 	for aa in binInput.upper():
-		if aa in base:
+		if chr(aa) in base:
 			score += 1
+	if score == 0:
+		score = -500
 	return score
 
 def popularScore(binInput):
@@ -103,15 +108,22 @@ def popularScore(binInput):
 	base = b' NIOATE'
 	for aa in binInput.upper():
 		sr = base.find(aa) + 1
-		score += sr * 3
+		score += sr * 5
 	return score
 
-def isAllPrintable(binInput):
-	res = True
+#def isAllPrintable(binInput):
+#	res = True
+#	for ll in binInput:
+#		if chr(ll) not in string.printable:
+#			res = False
+#	return res
+
+def notPrintable(binInput):
+	res = 0
 	for ll in binInput:
 		if chr(ll) not in string.printable:
-			res = False
-	return res
+			res += 1
+	return -(res*500)
 
 
 def test_challenge19():
