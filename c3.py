@@ -24,16 +24,16 @@ def __freq_analysis(str_input):
 	sorted_dic = sorted(dic.items(), key=lambda kv: kv[1], reverse=True)
 	return sorted_dic
 
-def __match_score(str_input, samples=10):
-	fanal = __freq_analysis(str_input)
-	baseline = "ETAOIN "
-	score = 0
-	if len(fanal) < samples:
-		samples = len(fanal)
-	for i in range(samples):
-		if fanal[i][0] in baseline:
-			score += 1
-	return score
+#def __match_score(str_input, samples=10):
+#	fanal = __freq_analysis(str_input)
+#	baseline = "ETAOIN "
+#	score = 0
+#	if len(fanal) < samples:
+#		samples = len(fanal)
+#	for i in range(samples):
+#		if fanal[i][0] in baseline:
+#			score += 1
+#	return score
 
 def __match_score2(str_input):
 	baseline = "ETAOIN "

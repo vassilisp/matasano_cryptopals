@@ -55,7 +55,6 @@ def getEncryptedList():
 		res.append(cipher)
 	return res
 
-
 if __name__ == "__main__":
 	res = getEncryptedList()
 	print(res)

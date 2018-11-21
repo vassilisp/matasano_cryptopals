@@ -19,7 +19,7 @@ class MTwister():
 	l = 18
 	f = 1812433253
 
-	_lower_mask = (2 ** 31) - 1
+	_lower_mask = (2 ** r) - 1
 	_lower_mask2 = (1 << r) - 1  
 	assert _lower_mask == _lower_mask2
 
@@ -31,7 +31,7 @@ class MTwister():
 		self._MT[0] = seed
 
 		self._upper_mask = self.lowerNbits(~self._lower_mask)
-		self._upper_mask2 = 2 ** 31
+		self._upper_mask2 = 2 ** self.r
 		assert self._upper_mask == self._upper_mask2
 
 		self._seed_mt(seed)
@@ -88,7 +88,7 @@ def mtwister_verification(vector_file):
 
 	for i, vec in enumerate(vectors):
 		rnd = mt.extract_number()
-		assert_equals(rnd, int(vec), "Testing with output vector i: " + str(i))
+		assert_equals(rnd, int(vec), "Testing with output vector i: " + str(i) + ", val:" + str(rnd))
 
 def test_mtwister_v1():
 	mtwister_verification('21.txt')

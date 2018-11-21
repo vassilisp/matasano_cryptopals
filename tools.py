@@ -12,7 +12,7 @@ def fixed_xor(bin_input1, bin_input2):
 
 #utils
 def getBlocks(binInput, blockSize):
-	return [binInput[i: i + blockSize] for i in range(0, len(binInput), blockSize)]
+	return (binInput[i: i + blockSize] for i in range(0, len(binInput), blockSize))
 
 def getRandom(klen):
 	return urandom(klen)

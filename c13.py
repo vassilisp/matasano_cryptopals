@@ -50,52 +50,52 @@ def checkProfile(prof):
 
 
 
-#========================================
-#Failed attempts
-
-def fail_challenge13():
-
-	enc_admin = encrypt_as_last(b'admin')
-	enc_user = encrypt_as_last(b'user')
-
-	res = b''
-	for i in range(32):
-		encrypted = getProfile(i*b'A')
-		if enc_user in encrypted:
-			mod_encrypted = encrypted.replace(enc_user, enc_admin)
-			res = checkProfile(mod_encrypted)
-			print("DONE")
-			break
-
-	print(res)
-	if b'admin' in res:
-		print("WE DID IT")
-	
-def encrypt_as_last(bin_input):
-	block_size = 16
-
-	marker1 = b'email='
-	target = bin_input
-
-	lm1 = len(marker1)
-	lt = len(target)
-#'email=vpan&uid=10&role=user'
-
-#sanity checks
-	if lm1+lt>block_size:
-		print("target too big max len=", block_size-lm1)
-		return None
-
-#use user provided input to encrypt admin as the last part of a block
-	fillerLen = (block_size -lm1 - lt)
-	start = lm1+fillerLen
-	stop = start+lt
-	user_input = marker1 + fillerLen*b'A' + target
-	enc_target = getProfile(user_input)[start:stop]
-	print(enc_target)
-	return enc_target
-
-#========================================
+##========================================
+##Failed attempts
+#
+#def fail_challenge13():
+#
+#	enc_admin = encrypt_as_last(b'admin')
+#	enc_user = encrypt_as_last(b'user')
+#
+#	res = b''
+#	for i in range(32):
+#		encrypted = getProfile(i*b'A')
+#		if enc_user in encrypted:
+#			mod_encrypted = encrypted.replace(enc_user, enc_admin)
+#			res = checkProfile(mod_encrypted)
+#			print("DONE")
+#			break
+#
+#	print(res)
+#	if b'admin' in res:
+#		print("WE DID IT")
+#	
+#def encrypt_as_last(bin_input):
+#	block_size = 16
+#
+#	marker1 = b'email='
+#	target = bin_input
+#
+#	lm1 = len(marker1)
+#	lt = len(target)
+##'email=vpan&uid=10&role=user'
+#
+##sanity checks
+#	if lm1+lt>block_size:
+#		print("target too big max len=", block_size-lm1)
+#		return None
+#
+##use user provided input to encrypt admin as the last part of a block
+#	fillerLen = (block_size -lm1 - lt)
+#	start = lm1+fillerLen
+#	stop = start+lt
+#	user_input = marker1 + fillerLen*b'A' + target
+#	enc_target = getProfile(user_input)[start:stop]
+#	print(enc_target)
+#	return enc_target
+#
+##========================================
 
 def test_challenge13():
 	block_size = 16

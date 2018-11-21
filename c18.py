@@ -12,7 +12,7 @@ def ctr_encrypt(key,  binInput, nonce=0, bS=16):
 	blocks = getBlocks(binInput, bS)
 	res = b''
 	for block in blocks:
-		ctr = nonce.to_bytes(bS, byteorder='little', signed=False)
+		#ctr = nonce.to_bytes(bS, byteorder='little', signed=False)
 		ctr = toBytes(nonce)
 		stream = encrypt(key, ctr)
 		if len(block) < bS:
